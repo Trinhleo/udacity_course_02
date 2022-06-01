@@ -23,23 +23,22 @@ import { filterImageFromURL, cleanUpLocalFiles } from './util/util';
   app.get("/filteredimage", async (req, res) => {
     const imageUrl = req.query.image_url;
     if (!imageUrl) {
-      res.status(400).send('image url is missing!')
+      res.status(400).send({ message: "image url is missing!" });
     }
 
     try {
       const filteredPath = await filterImageFromURL(imageUrl, tmpDir);
 
-      res.sendFile(filteredPath, err => {
-        if (err) {
-
-          res.status(500).send("Internal Server Error!")
+      res.sendFile(filteredPath, error => {
+        if (error) {
+          res.status(500).send({ message: "Internal Server Error!", error })
         }
 
         cleanUpLocalFiles(tmpDir);
       });
 
-    } catch (_) {
-      res.status(500).send("Internal Server Error!")
+    } catch (error) {
+      res.status(500).send({ message: "Internal Server Error!", error })
     }
   })
 
